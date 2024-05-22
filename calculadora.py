@@ -59,33 +59,30 @@ class Interfaz:
     # Controla el evento disparado al hacer click en un botón
     def click(self, texto, escribir):
         if not escribir:
-            if texto == "^" and self.operacion != "":
-                partes = self.operacion.split("^")
+            if texto == "=" and self.operacion != "":
+                if self.verificar_signos(self.operacion):
+                    partes = self.operacion.split("^")
 
-                if len(partes) == 2:
-                    base = float(partes[0])
-                    exponente = float(partes[1])
-                    resultado = pow(base, exponente)
+                    if len(partes) == 2:
+                        base = float(partes[0])
+                        exponente = float(partes[1])
+                        resultado = pow(base, exponente)
+                        self.limpiarPantalla()
+                        self.mostrarEnPantalla(int(resultado))
+                else:
+                    self.operacion = re.sub(u"\u00F7", "/", self.operacion)
+                    resultado = str(eval(self.operacion))
+                    self.operacion = ""
                     self.limpiarPantalla()
                     self.mostrarEnPantalla(resultado)
-                    self.operacion_temporal = resultado  # Almacenar el resultado de la potencia temporalmente
-                else:
-                    print("Error: La operación de potencia debe contener exactamente dos números separados por '^'.")
-            elif texto == "=" and self.operacion != "":
-                self.operacion = re.sub(u"\u00F7", "/", self.operacion)
-                resultado = str(eval(self.operacion))
-                self.operacion = ""
-                self.limpiarPantalla()
-                self.mostrarEnPantalla(resultado)
             elif texto == u"\u232B":
                 self.operacion = ""
                 self.limpiarPantalla()
         else:
-            if hasattr(self, 'operacion_temporal'):  # Verificar si hay un resultado de potencia temporal almacenado
-                self.operacion += str(self.operacion_temporal)  # Agregar el resultado a la operación
-                delattr(self, 'operacion_temporal')  # Eliminar el resultado temporal
+            
             self.operacion += str(texto)
             self.mostrarEnPantalla(texto)
+
 
 
     # Borra el contenido de la pantalla de la calculadora
@@ -101,6 +98,12 @@ class Interfaz:
         self.pantalla.insert(END, valor)
         self.pantalla.configure(state="disabled")
         return
+    
+    def verificar_signos(self, operacion):
+        for caracter in operacion:
+            if caracter == "^":
+                return True
+        return False
 
 
 ventana_principal = Tk()
