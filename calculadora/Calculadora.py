@@ -1,20 +1,17 @@
 # Importamos Las librerias y definimos las variables globales:
-
-import tkinter as tk
-import math as mt
-import Librerias as Lib
+import Funciones as FuncionesCal
 
 Archivo=""
+Theme=0
+Ans=0
+alto=0
+ancho=0
 
+# Abrimos la configuracion de software:
+Archivo=FuncionesCal.Config_Init()
+Theme=int(Archivo['Theme'])
+Ans=int(Archivo['Ans'])
+Alto=int(Archivo['Alto'])
+Ancho=int(Archivo['Ancho'])
 
-# Definimos las funciones:
-
-
-
-# Abrimos la configuracion de la software:
-try: 
-    Archivo = open('Config.txt','r')
-except FileNotFoundError:
-    Archivo = open("Config.txt","w+")
-    Archivo.writelines(Lib.Base_Config)
-
+FuncionesCal.Open_Calc(Theme,Ans,Alto,Ancho)
