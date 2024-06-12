@@ -26,20 +26,47 @@ def Config_Init():
             Archivo.writelines(Lib.Base_Config)
     return datos_encontrados
 
-#Funcion del boton theme, cuando la entrada es  azul retorna la funcion azul y si la entrada en verde retorna la funcion verde 
-#def cambioColor(t):
-    if t=="azul":
-        return azul
-    elif t=="verde":
-        return verde
-    elif t=='Casio':
-        return Casio
+def Escribir(Numero):
+    nueva_configuracion = f"Theme={Numero}\n"
+    print(Numero)
+    try:
+        # Leer el archivo y modificar la configuración del tema
+        with open("Config.txt", "r") as archivo:
+            lineas = archivo.readlines()
+
+        for i, linea in enumerate(lineas):
+            if linea.startswith("Theme="):
+                lineas[i] = nueva_configuracion
+                break
+
+        # Escribir las nuevas líneas en el archivo
+        with open("Config.txt", "w") as archivo:
+            archivo.writelines(lineas)
+            
+    except FileNotFoundError:
+        pass
+
+    
+    
+
+             
+
 #Funcion de los botones al hacer click 
+def CambiarColor(Color):
+    if Color != 2:
+        Color=Color+1
+    else:
+        Color=0
+        
+    Escribir(Color)
+    Cerrar_Ventana()
+    Open_Calc(Color, Ans, Alto, Ancho)
+
 def botones(n):
-    global A
-    caja.insert(A, n)
-    A=17
-def botonesExp(n, ):
+   global A
+   caja.insert(A, n)
+   A=17
+def botonesExp(n):
     global A
     caja.insert(A, n)
     A+=2
@@ -55,9 +82,9 @@ def botonesInverso(n):
     global A
     caja.insert(A, n)
     A=0    
-def AC(caja):
+def AC():
     caja.delete(0, END)
-def borrar(caja):
+def borrar():
     global A
     caja.delete(A-1,A)
     A-=1
@@ -126,9 +153,11 @@ def igual():
     caja.insert (0,exec(operacion))
     A=0
 
-def Open_Calc(Theme, Ans, Alto, Ancho):
-    # Calculadora:
 
+
+def Open_Calc(theme, Ans, Alto, Ancho):
+    # Calculadora:
+    global ventana
     ventana= Tk()
     ventana.title("Calculadora")
     ventana.config(bg='grey63')
@@ -137,45 +166,48 @@ def Open_Calc(Theme, Ans, Alto, Ancho):
     caja=Entry(ventana, font=('System 20'),bg='dark olive green')
     caja.grid(row=0, column=0, columnspan=6, padx=5, pady=5)
 
-    botonE=Button(ventana, text="e^x",width=Ancho, height=Alto,bg='LightSteelBlue4', command=lambda:FuncionE("e"))
-    Theme= Button(ventana, text="Theme",width=Ancho, height=Alto,bg='LightSteelBlue4')
-    botonCero=Button(ventana, text= "0", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(0))
-    botonPunto=Button(ventana, text=".", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(','))
-    botonPi=Button(ventana, text= "1/x", width=Ancho, height=Alto,bg='gray25',command=lambda:botonesInverso('**-1'))
-    botonPorcen=Button(ventana, text="%", width=Ancho, height=Alto,bg='gray25',command=lambda:botones('%'))
-    botonIgual=Button(ventana, text="=", width=Ancho, height=Alto,bg='gray25',command=igual)
-    boton1=Button(ventana, text="1", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(1))
-    boton2=Button(ventana, text="2", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(2))
-    boton3=Button(ventana, text="3", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(3))
-    botonMas=Button(ventana, text="+", width=Ancho, height=Alto,bg='gray25',command=lambda:botones('+'))
-    botonMenos=Button(ventana, text="- ", width=Ancho, height=Alto,bg='gray25',command=lambda:botones('-'))
-    boton4=Button(ventana, text="4", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(4))
-    boton5=Button(ventana, text="5", width=Ancho, height=Alto,bg='gray25',command=lambda:botones(5))
-    boton6=Button(ventana, text='6', width=Ancho, height=Alto,bg='gray25',command=lambda:botones(6))
-    botonMulti=Button(ventana, text="×", width=Ancho, height=Alto,bg='gray25',command=lambda:botones('*'))
-    botonDivision=Button(ventana, text='÷',width=Ancho, height=Alto,bg='gray25',command=lambda:botones('/'))
-    boton7=Button(ventana, text='7', width=Ancho, height=Alto,bg='gray25',command=lambda:botones(7))
-    boton8=Button(ventana, text='8', width=Ancho, height=Alto,bg='gray25',command=lambda:botones(8))
-    boton9=Button(ventana, text='9', width=Ancho, height=Alto,bg='gray25',command=lambda:botones(9))
+    botonE=Button(ventana, text="e^x",width=Ancho, height=Alto,bg=Lib.Theme[theme][3], command=lambda:FuncionE("e"))
+    ThemeButton= Button(ventana, text="Theme",width=Ancho, height=Alto,bg=Lib.Theme[theme][3],command=lambda:CambiarColor(theme))
+    botonCero=Button(ventana, text= "0", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(0))
+    botonPunto=Button(ventana, text=".", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(','))
+    botonPi=Button(ventana, text= "1/x", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botonesInverso('**-1'))
+    botonPorcen=Button(ventana, text="%", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones('%'))
+    botonIgual=Button(ventana, text="=", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=igual)
+    boton1=Button(ventana, text="1", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(1))
+    boton2=Button(ventana, text="2", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(2))
+    boton3=Button(ventana, text="3", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(3))
+    botonMas=Button(ventana, text="+", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones('+'))
+    botonMenos=Button(ventana, text="- ", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones('-'))
+    boton4=Button(ventana, text="4", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(4))
+    boton5=Button(ventana, text="5", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(5))
+    boton6=Button(ventana, text='6', width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(6))
+    botonMulti=Button(ventana, text="×", width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones('*'))
+    botonDivision=Button(ventana, text='÷',width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones('/'))
+    boton7=Button(ventana, text='7', width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(7))
+    boton8=Button(ventana, text='8', width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(8))
+    boton9=Button(ventana, text='9', width=Ancho, height=Alto,bg=Lib.Theme[theme][1],command=lambda:botones(9))
 
-    botonDel=Button(ventana, text='Del', width=Ancho, height=Alto,bg='DeepPink4', command=borrar)
-    botonAC=Button(ventana, text='AC', width=Ancho, height=Alto,bg='DeepPink4', command=AC)
-    botonIzquier=Button(ventana,text='🢀', width=Ancho, height=Alto,bg='dark slate gray', command=lambda: flechaIz())
-    botonDerecha=Button(ventana, text='🢂', width=Ancho, height=Alto,bg='dark slate gray', command=lambda: flechaDer())
+    botonDel=Button(ventana, text='Del', width=Ancho, height=Alto,bg=Lib.Theme[theme][2], command=borrar)
+    botonAC=Button(ventana, text='AC', width=Ancho, height=Alto,bg=Lib.Theme[theme][2], command=AC)
+    botonIzquier=Button(ventana,text='🢀', width=Ancho, height=Alto,bg=Lib.Theme[theme][4], command=lambda: flechaIz())
+    botonDerecha=Button(ventana, text='🢂', width=Ancho, height=Alto,bg=Lib.Theme[theme][4], command=lambda: flechaDer())
 
-    botonRaiz=Button(ventana, text='√ ', width=Ancho, height=Alto,bg='dark slate gray',command=lambda:botones('r'))
-    botonExponente=Button(ventana,text='Exp', width=Ancho, height=Alto,bg='dark slate gray',command=lambda:botonesExp('**'))
-    botonLog=Button(ventana, text='Log', width=Ancho, height=Alto,bg='dark slate gray',command=lambda:botonesLog('log'))
-    botonParentesis=Button(ventana, text='( ', width=Ancho, height=Alto,bg='LightSteelBlue4',command=lambda:botones('('))
-    botonParentesisII=Button(ventana, text=') ', width=Ancho, height=Alto,bg='LightSteelBlue4',command=lambda:botones(')'))
-    botonseno=Button(ventana, text='sin ', width=Ancho, height=Alto,bg='dark slate gray',command=Seno)
-    botoncoseno=Button(ventana, text='cos ', width=Ancho, height=Alto, bg='dark slate gray', command=Cos)
-    botontangente=Button(ventana, text='tan ', width=Ancho, height=Alto, bg='dark slate gray', command=Tan)
+    botonRaiz=Button(ventana, text='√ ', width=Ancho, height=Alto,bg=Lib.Theme[theme][4],command=lambda:botones('r'))
+    botonExponente=Button(ventana,text='Exp', width=Ancho, height=Alto,bg=Lib.Theme[theme][4],command=lambda:botonesExp('**'))
+    botonLog=Button(ventana, text='Log', width=Ancho, height=Alto,bg=Lib.Theme[theme][4],command=lambda:botonesLog('log'))
+    botonParentesis=Button(ventana, text='( ', width=Ancho, height=Alto,bg=Lib.Theme[theme][3],command=lambda:botones('('))
+    botonParentesisII=Button(ventana, text=') ', width=Ancho, height=Alto,bg=Lib.Theme[theme][3],command=lambda:botones(')'))
+    botonseno=Button(ventana, text='sin ', width=Ancho, height=Alto,bg=Lib.Theme[theme][4],command=Seno)
+    botoncoseno=Button(ventana, text='cos ', width=Ancho, height=Alto, bg=Lib.Theme[theme][4], command=Cos)
+    botontangente=Button(ventana, text='tan ', width=Ancho, height=Alto, bg=Lib.Theme[theme][4], command=Tan)
 
     botonE.grid(row=1, column=4, padx=5, pady=5)
-    Theme.grid(row= 1,column=0, padx=5, pady=5)
+    ThemeButton.grid(row= 1,column=0, padx=5, pady=5)
     botonParentesis.grid(row=1, column=1, padx=5, pady=5)
     botonParentesisII.grid(row=1, column=3, padx=5, pady=5)
+
+
+
     botonRaiz.grid(row=2, column=0, padx=5, pady=5)
     botonIzquier.grid(row=2, column=1, padx=5, pady=5)
     botonExponente.grid(row=2, column=2, padx=5, pady=5)
@@ -210,4 +242,18 @@ def Open_Calc(Theme, Ans, Alto, Ancho):
 
     ventana.mainloop()
 
+def Cerrar_Ventana():
+    ventana.destroy()
 
+
+
+# Abrimos la configuracion de software:
+def TomarDatos():
+    archivo=Config_Init()
+    theme=int(archivo['Theme'])
+    ans=int(archivo['Ans'])
+    alto=int(archivo['Alto'])
+    ancho=int(archivo['Ancho'])
+    return theme, ans, alto, ancho
+
+Theme, Ans, Alto, Ancho = TomarDatos()
